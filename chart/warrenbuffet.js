@@ -2,7 +2,7 @@ window.onload = () => {
 
     const data = 
     {
-        labels: ['', '', '', '', '', '', ''],
+        labels: [],
         datasets: [
         {
             lineTension: 0.1,
@@ -21,7 +21,7 @@ window.onload = () => {
             pointHoverBorderWidth: 2,
             pointRadius: 5,
             pointHitRadius: 10,
-            data: [-65, 59, 80, 81, 56, 55, 40],
+            data: [],
             spanGaps: false,
         }]
     };
@@ -40,10 +40,11 @@ window.onload = () => {
         }
     });
 
-    const socket = io('http://localhost');
+    const socket = io('http://localhost:3000');
     socket.on('news', function (data) {
-        
-        const sentiment = data.sentiment || Math.floor(Math.random() * (Math.random() < 0.5 ? 100 : -100));
+        if (!data.sentiment)
+            return;
+        const sentiment = data.sentiment * 100;
         const length = graph.data.labels.length + 1;
         graph.data.datasets[0].data.push(sentiment);
         graph.data.labels.push('');
