@@ -1,3 +1,11 @@
 body {
 	padding: 2rem;
 }
+div#last-post {
+    color: #aaa;
+    margin: 10px;
+}
+div#last-post span {
+    text-decoration: underline;
+    color: black;
+}

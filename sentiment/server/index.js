@@ -8,7 +8,7 @@ const request = require('request');
 
 
 function startFeed(url, cb) {
-    let lastTimestamp = 1485504383000;
+    let lastTimestamp = 0;
     let timer = null;
 
     const poll = () => {
@@ -33,11 +33,24 @@ function startFeed(url, cb) {
 
 let queue = [];
 
-const stopFeed = startFeed('http://feeds.mashable.com/Mashable?format=xml', (item) => {
-    const {timestamp, title} = item;
-    queue.push({timestamp, title});
-    drainQueue();
-});
+let feeds = [
+    "http://feeds.mashable.com/Mashable?format=xml",
+    "http://rss.cnn.com/rss/edition.rss",
+    "http://rss.nytimes.com/services/xml/rss/nyt/World.xml",
+    "http://www.huffingtonpost.com/feeds/index.xml",
+    "https://www.theguardian.com/world/rss",
+    "http://www.dailymail.co.uk/articles.rss",
+    "http://www.wsj.com/xml/rss/3_7085.xml",
+    "http://www.independent.co.uk/news/world/rss",
+    "http://feeds.reuters.com/Reuters/worldNews"
+];
+feeds.forEach(f => {
+    startFeed(f, (item) => {
+        const {timestamp, title} = item;
+        queue.push({timestamp, title});
+        drainQueue();
+    });
+})
 
 let listeners = [];
 
@@ -46,6 +59,7 @@ function drainQueue() {
         return;
     if (drainQueue.running)
         return;
+    console.log('queue size', queue.length);
     drainQueue.running = true;
     const item = queue.shift();
     request("http://209.177.92.226:8080?input="+encodeURIComponent(item.title), function (error, response, body) {

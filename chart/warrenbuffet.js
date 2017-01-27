@@ -42,16 +42,14 @@ window.onload = () => {
 
     const socket = io('http://localhost:3000');
     socket.on('news', function (data) {
-        if (!data.sentiment)
-            return;
+        let str = `<span>${data.title}</span>, Sentiment: <span>${data.sentiment}</span>, Subject: <span>${data.syntax.nsubj}</span>, Object: <span>${data.syntax.dobj || data.syntax.pobj}</span>, Modifier: <span>${data.syntax.amod}</span>, Root: <span>${data.syntax.ROOT}</span>`;
+        document.querySelector("#last-post").innerHTML = str;
+        console.log(data.title, data.sentiment, 'subject', data.syntax.nsubj, 'object', data.syntax.dobj, 'modifier', data.syntax.amod, 'root', data.syntax.ROOT);
         const sentiment = data.sentiment * 100;
         const length = graph.data.labels.length + 1;
         graph.data.datasets[0].data.push(sentiment);
         graph.data.labels.push('');
         graph.update();
-
-
     });
-
 };
 
